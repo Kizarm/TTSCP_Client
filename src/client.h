@@ -37,6 +37,7 @@ class Connection {
     bool send (const string & s, const bool ack = true);
     void recv (OutputInterface * i);
     bool end  (OutputInterface * i);
+    bool recv ();  // přetížení pro ctrl část, vyhodí false při timeoutu (cca 1s)
     void fini ();
   protected:
     bool set_handle ();

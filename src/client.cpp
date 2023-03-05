@@ -79,9 +79,7 @@ bool Connection::send(const string & s, const bool ack) {
   if (n < 0) return false;
   if (!ack)  return true;
   usleep (TIMEOUT);
-  recv(nullptr);
-  if (!recvd) return false;
-  return true;
+  return recv();
 }
 void Connection::recv(OutputInterface * i) {
   while (true) {
@@ -94,7 +92,32 @@ void Connection::recv(OutputInterface * i) {
     //debug("%s:response=%s", id, rx_buff);
   }
 }
-
+static bool has_eol (const char * str, const int len) {
+  for (int i=0; i<len; i++) {
+    if (str [i] == '\n') return true;
+  }
+  return false;
+}
+bool Connection::recv() {   // control paket může být rozsekaný, ale končí \n
+  const int cycle = 1000000 / TIMEOUT;
+  recvd = 0;
+  debug("%s:recv:clear\n", id);
+  for (int i=0; i<cycle; i++) {
+    while (true) {
+      const int r = ::read(fd, rx_buff + recvd, RXBUFLEN - recvd);
+      if (r <= 0) break;
+      recvd += r;
+      rx_buff [recvd] = '\0';
+    }
+    if (has_eol (rx_buff, recvd)) {
+      //debug("%s:recv+:%d\n", id, recvd);
+      debug("%s:response=%s", id, rx_buff);
+      return true;
+    }
+    usleep (TIMEOUT);
+  }
+  return false; // timeout
+}
 void Connection::fini() {
   if (fd > 0) { ::close(fd); fd = -1; }
 }
@@ -102,6 +125,7 @@ bool Connection::end(OutputInterface * i) {
   const string s (rx_buff, recvd);
   const size_t r = s.find ("200 output OK");
   if (r == string::npos) return false;
+  debug("%s:end OK\n", id);
   if (i) i->fini();
   return true;
 }
@@ -117,13 +141,19 @@ bool TTSCP_Client::say(const string & s) {
   char aplbuf [blen];
   const int r = snprintf(aplbuf, blen, "appl %zd\r\n", len);
   string c (aplbuf, r);
+  if (!ctrl.send(c)) return false;  // pořadí - napřed ctrl a pak data !!!
   if (!data.send(s, false)) return false;
-  if (!ctrl.send(c)) return false;
-  for (int n=0; n<1000; n++) {
-    usleep (TIMEOUT << 2);
-    ctrl.recv (nullptr);
+  /* Parametr m určuje timeout (v sec) a je závislý na délce textu
+   * a je podstatný pouze, pokud je zvuk přehráván na serveru.
+   * Jinak se jen čeká na zvuková data a pak se skončí. */
+  const int m = 5;
+  for (int n=0; n<m; n++) {        // průchod tady trvá cca 1s (ctrl.recv())
+    debug("wait pass %d\n", n);
     data.recv (iface);
-    if (ctrl.end(iface)) break;
+    if (ctrl.recv ()) {
+      if (ctrl.end(iface)) break;
+    } // else timeout ignoruj
+    if (iface and n) break;        // pro jistotu skonči až v druhém průběhu
   }
   fini();
   return true;
