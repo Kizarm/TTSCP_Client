@@ -28,8 +28,8 @@ Connection::~Connection() {
 bool Connection::connect(const char * name, const int port) {
   struct sockaddr_in serv_addr;
   if ((fd = ::socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-      debug("socket creation error\n");
-      return -1;
+      fprintf(stderr, "socket creation error\n");
+      return false;
   }
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_port = htons(port);
@@ -80,6 +80,7 @@ bool Connection::send(const string & s, const bool ack) {
   if (!ack)  return true;
   usleep (TIMEOUT);
   recv(nullptr);
+  if (!recvd) return false;
   return true;
 }
 void Connection::recv(OutputInterface * i) {
@@ -105,7 +106,7 @@ bool Connection::end(OutputInterface * i) {
   return true;
 }
 
-/* Ukazuje se, že není nutné udržovat TCP spokení po celou
+/* Ukazuje se, že není nutné udržovat TCP spojení po celou
  * dobu života klienta. Ostatně doba vyslovení věty je vždy
  * o hodně větší než doba navázání spojení.  */
 

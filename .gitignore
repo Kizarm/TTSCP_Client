@@ -3,6 +3,7 @@
 *.kdev4
 # objects
 *.o
+epos/*
 client
 file/client
 file/*.wav
