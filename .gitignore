@@ -1,0 +1,9 @@
+# kdevelop
+.kde*
+*.kdev4
+# objects
+*.o
+client
+file/client
+file/*.wav
+alsa/client
