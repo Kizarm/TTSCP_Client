@@ -8,3 +8,14 @@ client
 file/client
 file/*.wav
 alsa/client
+kecal/kecal
+kecal/prep/gen/generate
+kecal/prep/libgsm.a
+kecal/prep/wav/*.wav
+kecal/stm/bld/*
+kecal/stm/f051/libgsm.a
+kecal/stm/pcm.bin
+kecal/stm/pcm.elf
+kecal/stm/pcm.lst
+kecal/stm/pcm.map
+
