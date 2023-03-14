@@ -1,0 +1,28 @@
+# Use clang / llvm toolchain
+CC = clang
+CX = clang++
+# linker je vlastně ld.lld
+LD   = clang++
+SIZE = llvm-size
+DUMP = llvm-objdump
+COPY = llvm-objcopy
+DEL  = rm -f
+
+ifeq ($(TGT),unix)
+ CFLAGS+= -Oz
+ LDLIBS+= -lpthread
+else
+ CM0SPEC = /thumb/v6-m/nofp
+ SYSROOT = /usr/lib/arm-none-eabi
+ GCCLIB  = -L/usr/lib/gcc/arm-none-eabi/9.2.1$(CM0SPEC)
+ GCCLIB += -L$(SYSROOT)/lib$(CM0SPEC)
+ TRIP = thumbv6-none-eabi
+ CFLAGS+= -Oz --sysroot=$(SYSROOT)
+ #CFLAGS+= -Wno-deprecated-volatile
+ CFLAGS+= --target=$(TRIP) $(MCPU)
+ LFLAGS+= --target=$(TRIP) $(MCPU) $(GCCLIB) -lgcc -lc
+ LFLAGS+= -nostdlib
+ LDLIBS+= -L$(TGT) -T script.ld
+ DFLAGS+= --triple=$(TRIP) $(CCPU)
+endif
+
