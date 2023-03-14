@@ -18,4 +18,4 @@ kecal/stm/pcm.bin
 kecal/stm/pcm.elf
 kecal/stm/pcm.lst
 kecal/stm/pcm.map
-
+kecal/gsmdata.c

@@ -7,12 +7,14 @@ CFLAGS = -Wall -Os -I./src
 MFLAGS = -o $(PR)
 LFLAGS = -lsndfile
 
-all: $(PR)
+all: $(PR) ../wav
 
 OBJECTS = main.o client.o file.o texts.o
 
 $(PR): $(OBJECTS)
 	$(CXX) $(MFLAGS) $(OBJECTS) $(LFLAGS)
+../wav:
+	mkdir ../wav
 clean:
 	rm -f *.o *~ *.wav $(PR)
 %.o: %.cpp
