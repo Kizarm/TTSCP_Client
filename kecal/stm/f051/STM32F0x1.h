@@ -21,8 +21,7 @@
 #define __NVIC_PRIO_BITS          3
 #define __Vendor_SysTickConfig    0
 #define __FPU_PRESENT             0
-typedef uint32_t ONE_BIT;
-enum _ONE_BIT : uint32_t { RESET = 0, SET = 1 };
+enum ONE_BIT { RESET = 0, SET = 1 };
 
 // ////////////////////+++ CRC +-+//////////////////// //
 struct CRC_Type         { /*!< cyclic redundancy check calculation unit */
@@ -10486,55 +10485,55 @@ struct STK_Type         { /*!< SysTick timer */
   __IO CVR_DEF               CVR ;  //!< [0008](04)[0x00000000]
   __IO CALIB_DEF           CALIB ;  //!< [000c](04)[0x00000000]
 }; /* total size = 0x0011, struct size = 0x0010 */
-static TIM2_Type        & TIM2        = * reinterpret_cast<TIM2_Type        *> (0x40000000);
-static TIM2_Type        & TIM3        = * reinterpret_cast<TIM2_Type        *> (0x40000400);
-static TIM6_Type        & TIM6        = * reinterpret_cast<TIM6_Type        *> (0x40001000);
-static TIM6_Type        & TIM7        = * reinterpret_cast<TIM6_Type        *> (0x40001400);
-static TIM14_Type       & TIM14       = * reinterpret_cast<TIM14_Type       *> (0x40002000);
-static RTC_Type         & RTC         = * reinterpret_cast<RTC_Type         *> (0x40002800);
-static WWDG_Type        & WWDG        = * reinterpret_cast<WWDG_Type        *> (0x40002c00);
-static IWDG_Type        & IWDG        = * reinterpret_cast<IWDG_Type        *> (0x40003000);
-static SPI1_Type        & SPI2        = * reinterpret_cast<SPI1_Type        *> (0x40003800);
-static USART1_Type      & USART2      = * reinterpret_cast<USART1_Type      *> (0x40004400);
-static USART1_Type      & USART3      = * reinterpret_cast<USART1_Type      *> (0x40004800);
-static USART1_Type      & USART4      = * reinterpret_cast<USART1_Type      *> (0x40004c00);
-static USART1_Type      & USART5      = * reinterpret_cast<USART1_Type      *> (0x40005000);
-static I2C1_Type        & I2C1        = * reinterpret_cast<I2C1_Type        *> (0x40005400);
-static I2C1_Type        & I2C2        = * reinterpret_cast<I2C1_Type        *> (0x40005800);
-static USB_Type         & USB         = * reinterpret_cast<USB_Type         *> (0x40005c00);
-static CAN_Type         & CAN         = * reinterpret_cast<CAN_Type         *> (0x40006400);
-static CRS_Type         & CRS         = * reinterpret_cast<CRS_Type         *> (0x40006c00);
-static PWR_Type         & PWR         = * reinterpret_cast<PWR_Type         *> (0x40007000);
-static DAC_Type         & DAC         = * reinterpret_cast<DAC_Type         *> (0x40007400);
-static CEC_Type         & CEC         = * reinterpret_cast<CEC_Type         *> (0x40007800);
-static SYSCFG_COMP_Type & SYSCFG_COMP = * reinterpret_cast<SYSCFG_COMP_Type *> (0x40010000);
-static EXTI_Type        & EXTI        = * reinterpret_cast<EXTI_Type        *> (0x40010400);
-static USART1_Type      & USART6      = * reinterpret_cast<USART1_Type      *> (0x40011400);
-static USART1_Type      & USART7      = * reinterpret_cast<USART1_Type      *> (0x40011800);
-static USART1_Type      & USART8      = * reinterpret_cast<USART1_Type      *> (0x40011c00);
-static ADC_Type         & ADC         = * reinterpret_cast<ADC_Type         *> (0x40012400);
-static TIM1_Type        & TIM1        = * reinterpret_cast<TIM1_Type        *> (0x40012c00);
-static SPI1_Type        & SPI1        = * reinterpret_cast<SPI1_Type        *> (0x40013000);
-static USART1_Type      & USART1      = * reinterpret_cast<USART1_Type      *> (0x40013800);
-static TIM15_Type       & TIM15       = * reinterpret_cast<TIM15_Type       *> (0x40014000);
-static TIM16_Type       & TIM16       = * reinterpret_cast<TIM16_Type       *> (0x40014400);
-static TIM16_Type       & TIM17       = * reinterpret_cast<TIM16_Type       *> (0x40014800);
-static DBGMCU_Type      & DBGMCU      = * reinterpret_cast<DBGMCU_Type      *> (0x40015800);
-static DMA1_Type        & DMA1        = * reinterpret_cast<DMA1_Type        *> (0x40020000);
-static DMA1_Type        & DMA2        = * reinterpret_cast<DMA1_Type        *> (0x40020400);
-static RCC_Type         & RCC         = * reinterpret_cast<RCC_Type         *> (0x40021000);
-static Flash_Type       & Flash       = * reinterpret_cast<Flash_Type       *> (0x40022000);
-static CRC_Type         & CRC         = * reinterpret_cast<CRC_Type         *> (0x40023000);
-static TSC_Type         & TSC         = * reinterpret_cast<TSC_Type         *> (0x40024000);
-static GPIOF_Type       & GPIOA       = * reinterpret_cast<GPIOF_Type       *> (0x48000000);
-static GPIOF_Type       & GPIOB       = * reinterpret_cast<GPIOF_Type       *> (0x48000400);
-static GPIOF_Type       & GPIOC       = * reinterpret_cast<GPIOF_Type       *> (0x48000800);
-static GPIOF_Type       & GPIOD       = * reinterpret_cast<GPIOF_Type       *> (0x48000c00);
-static GPIOF_Type       & GPIOE       = * reinterpret_cast<GPIOF_Type       *> (0x48001000);
-static GPIOF_Type       & GPIOF       = * reinterpret_cast<GPIOF_Type       *> (0x48001400);
-static STK_Type         & STK         = * reinterpret_cast<STK_Type         *> (0xe000e010);
-static NVIC_Type        & NVIC        = * reinterpret_cast<NVIC_Type        *> (0xe000e100);
-static SCB_Type         & SCB         = * reinterpret_cast<SCB_Type         *> (0xe000ed00);
+static TIM2_Type        & TIM2        = * reinterpret_cast<TIM2_Type        * const> (0x40000000);
+static TIM2_Type        & TIM3        = * reinterpret_cast<TIM2_Type        * const> (0x40000400);
+static TIM6_Type        & TIM6        = * reinterpret_cast<TIM6_Type        * const> (0x40001000);
+static TIM6_Type        & TIM7        = * reinterpret_cast<TIM6_Type        * const> (0x40001400);
+static TIM14_Type       & TIM14       = * reinterpret_cast<TIM14_Type       * const> (0x40002000);
+static RTC_Type         & RTC         = * reinterpret_cast<RTC_Type         * const> (0x40002800);
+static WWDG_Type        & WWDG        = * reinterpret_cast<WWDG_Type        * const> (0x40002c00);
+static IWDG_Type        & IWDG        = * reinterpret_cast<IWDG_Type        * const> (0x40003000);
+static SPI1_Type        & SPI2        = * reinterpret_cast<SPI1_Type        * const> (0x40003800);
+static USART1_Type      & USART2      = * reinterpret_cast<USART1_Type      * const> (0x40004400);
+static USART1_Type      & USART3      = * reinterpret_cast<USART1_Type      * const> (0x40004800);
+static USART1_Type      & USART4      = * reinterpret_cast<USART1_Type      * const> (0x40004c00);
+static USART1_Type      & USART5      = * reinterpret_cast<USART1_Type      * const> (0x40005000);
+static I2C1_Type        & I2C1        = * reinterpret_cast<I2C1_Type        * const> (0x40005400);
+static I2C1_Type        & I2C2        = * reinterpret_cast<I2C1_Type        * const> (0x40005800);
+static USB_Type         & USB         = * reinterpret_cast<USB_Type         * const> (0x40005c00);
+static CAN_Type         & CAN         = * reinterpret_cast<CAN_Type         * const> (0x40006400);
+static CRS_Type         & CRS         = * reinterpret_cast<CRS_Type         * const> (0x40006c00);
+static PWR_Type         & PWR         = * reinterpret_cast<PWR_Type         * const> (0x40007000);
+static DAC_Type         & DAC         = * reinterpret_cast<DAC_Type         * const> (0x40007400);
+static CEC_Type         & CEC         = * reinterpret_cast<CEC_Type         * const> (0x40007800);
+static SYSCFG_COMP_Type & SYSCFG_COMP = * reinterpret_cast<SYSCFG_COMP_Type * const> (0x40010000);
+static EXTI_Type        & EXTI        = * reinterpret_cast<EXTI_Type        * const> (0x40010400);
+static USART1_Type      & USART6      = * reinterpret_cast<USART1_Type      * const> (0x40011400);
+static USART1_Type      & USART7      = * reinterpret_cast<USART1_Type      * const> (0x40011800);
+static USART1_Type      & USART8      = * reinterpret_cast<USART1_Type      * const> (0x40011c00);
+static ADC_Type         & ADC         = * reinterpret_cast<ADC_Type         * const> (0x40012400);
+static TIM1_Type        & TIM1        = * reinterpret_cast<TIM1_Type        * const> (0x40012c00);
+static SPI1_Type        & SPI1        = * reinterpret_cast<SPI1_Type        * const> (0x40013000);
+static USART1_Type      & USART1      = * reinterpret_cast<USART1_Type      * const> (0x40013800);
+static TIM15_Type       & TIM15       = * reinterpret_cast<TIM15_Type       * const> (0x40014000);
+static TIM16_Type       & TIM16       = * reinterpret_cast<TIM16_Type       * const> (0x40014400);
+static TIM16_Type       & TIM17       = * reinterpret_cast<TIM16_Type       * const> (0x40014800);
+static DBGMCU_Type      & DBGMCU      = * reinterpret_cast<DBGMCU_Type      * const> (0x40015800);
+static DMA1_Type        & DMA1        = * reinterpret_cast<DMA1_Type        * const> (0x40020000);
+static DMA1_Type        & DMA2        = * reinterpret_cast<DMA1_Type        * const> (0x40020400);
+static RCC_Type         & RCC         = * reinterpret_cast<RCC_Type         * const> (0x40021000);
+static Flash_Type       & Flash       = * reinterpret_cast<Flash_Type       * const> (0x40022000);
+static CRC_Type         & CRC         = * reinterpret_cast<CRC_Type         * const> (0x40023000);
+static TSC_Type         & TSC         = * reinterpret_cast<TSC_Type         * const> (0x40024000);
+static GPIOF_Type       & GPIOA       = * reinterpret_cast<GPIOF_Type       * const> (0x48000000);
+static GPIOF_Type       & GPIOB       = * reinterpret_cast<GPIOF_Type       * const> (0x48000400);
+static GPIOF_Type       & GPIOC       = * reinterpret_cast<GPIOF_Type       * const> (0x48000800);
+static GPIOF_Type       & GPIOD       = * reinterpret_cast<GPIOF_Type       * const> (0x48000c00);
+static GPIOF_Type       & GPIOE       = * reinterpret_cast<GPIOF_Type       * const> (0x48001000);
+static GPIOF_Type       & GPIOF       = * reinterpret_cast<GPIOF_Type       * const> (0x48001400);
+static STK_Type         & STK         = * reinterpret_cast<STK_Type         * const> (0xe000e010);
+static NVIC_Type        & NVIC        = * reinterpret_cast<NVIC_Type        * const> (0xe000e100);
+static SCB_Type         & SCB         = * reinterpret_cast<SCB_Type         * const> (0xe000ed00);
 
 static_assert (sizeof(struct TIM2_Type) == 80, "size error TIM2");
 static_assert (sizeof(struct TIM6_Type) == 48, "size error TIM6");

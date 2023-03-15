@@ -16,14 +16,14 @@ static void Dma1Ch5Init (void * addr) {
   DMA1.CNDTR5.R = PWMLEN << 1;
   // Configure increment, size, interrupts and circular mode
   DMA1.CCR5.modify([](DMA1_Type::CCR5_DEF & ccr) -> auto {
-    ccr.B.MINC  = 1u;
+    ccr.B.MINC  = SET;
     ccr.B.MSIZE = 1u;
     ccr.B.PSIZE = 1u;
-    ccr.B.DIR   = 1u;
-    ccr.B.HTIE  = 1u;          // Po půlce přerušit.
-    ccr.B.TCIE  = 1u;          // Po dokončení přerušit.
-    ccr.B.CIRC  = 1u;
-    ccr.B.EN    = 0u;
+    ccr.B.DIR   = SET;
+    ccr.B.HTIE  = SET;          // Po půlce přerušit.
+    ccr.B.TCIE  = SET;          // Po dokončení přerušit.
+    ccr.B.CIRC  = SET;
+    ccr.B.EN    = RESET;
     return ccr.R;
   });
 }
@@ -39,41 +39,41 @@ PcmDma::PcmDma(FIFO<PText, FIFOLEN> & f) noexcept : fifo(f), gsm(), indicator(Gp
   pin1p.setAF (2);
   pin1n.setAF (2);
   // 1. Enable clock peripheral
-  RCC.APB2ENR.B.TIM1EN = 1u;
-  RCC.AHBENR. B.DMA1EN = 1u;
+  RCC.APB2ENR.B.TIM1EN = SET;
+  RCC.AHBENR. B.DMA1EN = SET;
   // 2. Timer
   TIM1.PSC.R  = 0u;
   TIM1.ARR.R  = MAXPWM - 1;
   TIM1.RCR.R  = 0u;
   // OC preload, CC output, Mode 6 = PWM1
   TIM1.CCMR1_Output.modify([](TIM1_Type::CCMR1_Output_DEF & r) -> auto {
-    r.B.OC2PE = 1u;
+    r.B.OC2PE = SET;
     r.B.OC2M  = 6u;
     return r.R;
   });
   // povol pin + negaci
   TIM1.CCER.modify([](TIM1_Type::CCER_DEF & r) -> auto {
-    r.B.CC2E  = 1u;
-    r.B.CC2NE = 1u;
+    r.B.CC2E  = SET;
+    r.B.CC2NE = SET;
     return r.R;
   });
   // Set Output, dead time
   TIM1.BDTR.modify([](TIM1_Type::BDTR_DEF & r) -> auto {
     r.B.DTG  = 48u;    // dead: 1 us
-    r.B.MOE  = 1u;     // Main output enable
+    r.B.MOE  = SET;    // Main output enable
   //r.B.OSSR = 1u;     // Off-state selection for Run mode - TODO
     return r.R;
   });
   // Preload
   TIM1.CR1.modify([](TIM1_Type::CR1_DEF & r) -> auto {
-    r.B.ARPE = 1u; // TIM1_ARR register is buffered
-    r.B.URS  = 1u; // Only counter overflow/underflow generates an update DMA request
+    r.B.ARPE = SET; // TIM1_ARR register is buffered
+    r.B.URS  = SET; // Only counter overflow/underflow generates an update DMA request
     return r.R;
   });
   /* Update DMA request enable
    * Spustíme DMA - sice budou dlouhé buffery, ale přerušení jen po 20ms */
-  TIM1.EGR.B.UG   = 1u; // Reinitialize the counter and generates an update of the registers
-  TIM1.DIER.B.UDE = 1u; // Update DMA request enabled
+  TIM1.EGR.B.UG   = SET; // Reinitialize the counter and generates an update of the registers
+  TIM1.DIER.B.UDE = SET; // Update DMA request enabled
   Dma1Ch5Init (pwmbuf);
   // 3. NVIC
   NVIC_EnableIRQ (DMA1_CH4_5_6_7_DMA2_CH3_4_5_IRQn);
