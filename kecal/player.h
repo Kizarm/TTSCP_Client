@@ -27,7 +27,7 @@ class TextPlayer {
     
     void out (const text_p & o);     // výstup vzorků z pcmbuf
     
-    bool pcm ();
+    bool pcm () const;
 };
 
 #endif // PLAYER_H

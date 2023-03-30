@@ -32,7 +32,7 @@ void TextPlayer::fini() {
   snd_pcm_close (handle);
   handle = nullptr;
 }
-bool TextPlayer::pcm() {
+bool TextPlayer::pcm() const {
   int n = snd_pcm_writei (handle, pcmbuf, GSMLEN);
   // printf ("%d = write (%d)\n", n, len);
   if (n<0) n = snd_pcm_recover (handle, n, 0);

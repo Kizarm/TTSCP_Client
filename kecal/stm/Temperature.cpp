@@ -19,7 +19,8 @@ static inline void AdcCalibrate (void) {
   // Lépe trochu počkat.
   for (volatile int n=0; n<10000; n++) asm volatile ("nop");
 }
-
+// ono to měří teplotu čipu, ta je asi o 13 st.C větší, nutno dokalibrovat
+static constexpr int TCORR = (30 - 13) * 1000;
 Temperature::Temperature() noexcept : correction0(0), correction1(0), average(0) {
   RCC.APB2ENR.B.ADCEN   = SET;  // clock
   AdcCalibrate();
@@ -46,14 +47,18 @@ Temperature::Temperature() noexcept : correction0(0), correction1(0), average(0)
   const uint16_t & t110 = * reinterpret_cast<const uint16_t * const>(0x1FFFF7C2u);
   correction1 = 80000 / (t30 - t110);   // v tisicinach st.C
   correction0 = t30;
+  // set average
+  ADC.CR.B.ADSTART = SET;
+  while (ADC.CR.B.ADSTART);
+  const int td = ADC.DR.R;
+  average = (correction0 - td) * correction1 + TCORR;
 }
 static constexpr int BK = int (0.01 * double (1L << 16));
 int Temperature::meassure() {
   ADC.CR.B.ADSTART = SET;
   while (ADC.CR.B.ADSTART);
   const int td = ADC.DR.R;
-  // ono to měří teplotu čipu, ta je asi o 13 st.C větší, nutno dokalibrovat
-  const int tt = (correction0 - td) * correction1 + 17000;
+  const int tt = (correction0 - td) * correction1 + TCORR;
   average = (7 * average + tt) >> 3;  // průměrování je potřeba, ADC dost lítá
   return (average * BK) >> 16;        // ven jen desetiny (dělení konstantou nahrazeno násobením)
 }
