@@ -11,11 +11,11 @@
  */
 static void Dma1Ch5Init (void * addr) {
   // Configure the peripheral data register address etc
-  DMA1.CPAR5.R  = reinterpret_cast<size_t> (& (TIM1.CCR2));
-  DMA1.CMAR5.R  = reinterpret_cast<size_t> (addr);
+  DMA1. CPAR5.R = reinterpret_cast<size_t> (& (TIM1.CCR2));
+  DMA1. CMAR5.R = reinterpret_cast<size_t> (addr);
   DMA1.CNDTR5.R = PWMLEN << 1;
   // Configure increment, size, interrupts and circular mode
-  DMA1.CCR5.modify([](DMA1_Type::CCR5_DEF & ccr) -> auto {
+  DMA1.CCR5.modify([](auto & ccr) -> auto {
     ccr.B.MINC  = SET;
     ccr.B.MSIZE = 1u;
     ccr.B.PSIZE = 1u;
@@ -28,8 +28,8 @@ static void Dma1Ch5Init (void * addr) {
   });
 }
 static PcmDma * PcmDmaInstance = nullptr;
-PcmDma::PcmDma(FIFO<PText, FIFOLEN> & f) noexcept : fifo(f), gsm(), indicator(GpioPortA, 1),
-    delay_counter(0), ptrl(pwmbuf), ptrh(pwmbuf + PWMLEN) {
+PcmDma::PcmDma() noexcept : AbstractChain(), indicator(GpioPortA, 1),
+  delay_counter(0), ptrl(pwmbuf), ptrh(pwmbuf + PWMLEN) {
   PcmDmaInstance = this;
   const GpioClass de (GpioPortA, 12);
   de << true;
@@ -80,41 +80,17 @@ PcmDma::PcmDma(FIFO<PText, FIFOLEN> & f) noexcept : fifo(f), gsm(), indicator(Gp
   TIM1.CR1.R     |= 1u; // enable TIM1 (překladač bohužel bere poslední bit jako half, registr to neunese)
   DMA1.CCR5.R    |= 1u; // enable DMA  (dtto)
 }
-static constexpr int      INPUT_BIT_RANGE = 16;
-static constexpr unsigned SIGMA_MASK      = (1u << (INPUT_BIT_RANGE  + 0)) - 1u;
-static constexpr unsigned SIGNED_OFFEST   = (1u << (INPUT_BIT_RANGE  - 1));
- // Předpokládá se na vstupu signed int o šířce INPUT_BIT_RANGE
- // přičemž 0 na vstupu odpovídá MAXPWM / 2 na výstupu. Vypadá to divně, ale funguje.
-static unsigned pwm_sd (const int input) {
-  static unsigned sigma  = 0;   // podstatné je, že proměnná je statická
-  const  unsigned sample = (input + SIGNED_OFFEST) * MAXPWM;
-  sigma &= SIGMA_MASK;          // v podstatě se odečte hodnota PWM
-  sigma += sample;              // integrace prostým součtem
-  return sigma  >> INPUT_BIT_RANGE;
-}
 void PcmDma::drq() {      // obal ma přerušení od DMA uvnitř třídy
   DMA1_Type::ISR_DEF status (DMA1.ISR);
   DMA1.IFCR.R = status.R; // clear flags
   uint16_t * const dptr = status.B.HTIF5 ? ptrl : ptrh;
-  PText source;
-  if (fifo.Read(source)) {
-    +indicator;           // měření doby trvání dekódování rámce
-    gsm_frame tmp;
-    memcpy (tmp, source.get(), sizeof(gsm_frame));
-    gsm.decode(tmp, tmpbuf);
-    int k = 0;
-    for (int n=0; n<GSMLEN; n++) {
-      const int16_t s = tmpbuf[n];
-      dptr [k++] = pwm_sd (s);    // vyzkoušená metoda jak vylepšit PWM
-      dptr [k++] = pwm_sd (s);    // pokud máme frekvenci PWM větší
-      dptr [k++] = pwm_sd (s);    // než vzorkovací frekvence signálu ft = n * fs, n = 3
-    }
-    -indicator;
-  } else {
-    // vyplnit tichem - je sice zbytečné dělat to opakovaně, ale nevadí
-    for (int n=0; n<PWMLEN; n++) dptr[n] = MAXPWM >> 1;
-    if (delay_counter) delay_counter -= 1;
-  }
+  +indicator;           // měření doby trvání dekódování rámce
+  const bool has_data = send (dptr, PWMLEN);
+  -indicator;
+  if (has_data) return;
+  // vyplnit tichem - je sice zbytečné dělat to opakovaně, ale nevadí
+  for (int n=0; n<PWMLEN; n++) dptr[n] = MAXPWM >> 1;
+  if (delay_counter) delay_counter -= 1;
 }
 // Přerušení od DMA
 extern "C" void DMA1_CH4_5_6_7_DMA2_CH3_4_5_IRQHandler (void) {

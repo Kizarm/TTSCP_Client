@@ -22,7 +22,7 @@ CFLAGS+= -I. -I.. -I./common -I./$(TGT)
 all: $(BLD) $(PRJ).elf
 # zdrojaky
 #OBJS  = test.o print.o usart.o Temperature.o
-OBJS   = main.o PcmDma.o Temperature.o
+OBJS   = main.o PcmDma.o Temperature.o GsmDecoder.o
 OBJS  += player.o gsmdata.o
 ifeq ($(TGT),unix)
 LDLIBS+=

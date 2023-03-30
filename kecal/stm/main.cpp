@@ -3,6 +3,7 @@
 #include "player.h"
 #include "PcmDma.h"
 #include "Temperature.h"
+#include "GsmDecoder.h"
 
 /*        Mluvící teploměr.
  * 
@@ -20,7 +21,8 @@
 
 static FIFO<PText, FIFOLEN> fifo;
 static TextPlayer           player (fifo);
-static PcmDma               pcm    (fifo);
+static GsmDecoder           decoder(fifo);
+static PcmDma               pcm;
 static Temperature          temp;
 static GpioClass but (GpioPortA, 2, GPIO_Mode_IN);
 
@@ -29,6 +31,7 @@ static inline int iabs (const int n) {
 }
 
 int main (void) {
+  pcm.attach (&decoder);
   but.setPuPd(GPIO_PuPd_UP);
   int teo = 0;
   for (;;) {
